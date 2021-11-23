@@ -6,6 +6,7 @@ const socketio  =require('socket.io');
 const path = require('path');
 const Sockets = require('./sockets');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 
 class Server{
 
@@ -13,6 +14,9 @@ class Server{
 
         this.app = express();
         this.port = process.env.PORT;
+
+        // Conectar a la BD
+        dbConnection();
         
         // HTTP SERVER
         this.server = http.createServer(this.app);
@@ -27,6 +31,13 @@ class Server{
 
         // Configurar CORS
         this.app.use( cors() );
+
+        // Parseo del body
+        this.app.use( express.json() );
+
+        //Api ENDpoints
+        this.app.use('/api/login', require('../routers/auth'))
+        this.app.use('/api/mensajes', require('../routers/mensajes'))
 
     }
 
